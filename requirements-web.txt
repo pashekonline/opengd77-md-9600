@@ -1,0 +1,5 @@
+# Зависимости WEB UI. Ставятся поверх основных:
+#   pip install -r requirements-web.txt
+-r requirements.txt
+
+Django>=5.0,<5.3

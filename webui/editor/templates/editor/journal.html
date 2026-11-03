@@ -1,0 +1,14 @@
+{% extends "editor/base.html" %}
+{% block title %}Журнал{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Журнал событий</h2>
+  {% if events %}
+  <pre class="journal">{% for e in events %}{{ e }}
+{% endfor %}</pre>
+  {% else %}
+  <p class="dim">Журнал пока пуст.</p>
+  {% endif %}
+  <div class="form-buttons"><a href="/" class="btn">← Каналы</a></div>
+</div>
+{% endblock %}

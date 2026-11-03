@@ -1,0 +1,26 @@
+[
+  {
+    "name": "SAUDISAT-1C (SO-50)",
+    "norad_id": 27607,
+    "rx_freq_mhz": 436.795,
+    "tx_freq_mhz": 145.85,
+    "ctcss_tx_hz": 67.0,
+    "arm_ctcss_hz": 74.4,
+    "secondary_rx_freq_mhz": 149.025,
+    "secondary_tx_freq_mhz": null,
+    "tertiary_rx_freq_mhz": null,
+    "tertiary_tx_freq_mhz": null
+  },
+  {
+    "name": "ISS (ZARYA)",
+    "norad_id": 25544,
+    "rx_freq_mhz": 437.8,
+    "tx_freq_mhz": 145.99,
+    "ctcss_tx_hz": 67.0,
+    "arm_ctcss_hz": null,
+    "secondary_rx_freq_mhz": 145.825,
+    "secondary_tx_freq_mhz": 145.825,
+    "tertiary_rx_freq_mhz": 437.55,
+    "tertiary_tx_freq_mhz": null
+  }
+]

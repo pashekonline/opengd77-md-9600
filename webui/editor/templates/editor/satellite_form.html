@@ -1,0 +1,95 @@
+{% extends "editor/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card narrow wide">
+  <h2>{{ title }}</h2>
+
+  {% if errors.name %}<div class="field-error global">{{ errors.name }}</div>{% endif %}
+
+  <form method="post" id="sat-form">
+    {% csrf_token %}
+
+    <label class="span2">Имя спутника (как в справочнике)
+      <div class="norad-row">
+        <input name="name" id="sat-name" maxlength="{{ name_max }}"
+               value="{{ values.name }}" autofocus required>
+        <button type="button" class="btn" id="find-norad">Найти NORAD</button>
+      </div>
+      <div id="norad-results" class="norad-results"></div>
+      {% if errors.name %}<span class="field-error">{{ errors.name }}</span>{% endif %}
+    </label>
+
+    <div class="norad-row" style="margin: 6px 0 4px">
+      <label>NORAD ID
+        <input name="norad_id" id="sat-norad" value="{{ values.norad_id }}"
+               inputmode="numeric">
+        {% if errors.norad_id %}<span class="field-error">{{ errors.norad_id }}</span>{% endif %}
+      </label>
+      <button type="button" class="btn" id="load-tx">Транспондеры</button>
+    </div>
+
+    <div class="pair" data-pair="1">
+      <div class="pair-title">Пара 1 — основная (можно перетащить транспондер сюда)</div>
+      <div class="form-grid">
+        <label>RX1, МГц
+          <input name="rx_freq_mhz" value="{{ values.rx_freq_mhz }}">
+          {% if errors.rx_freq_mhz %}<span class="field-error">{{ errors.rx_freq_mhz }}</span>{% endif %}
+        </label>
+        <label>TX1, МГц
+          <input name="tx_freq_mhz" value="{{ values.tx_freq_mhz }}">
+          {% if errors.tx_freq_mhz %}<span class="field-error">{{ errors.tx_freq_mhz }}</span>{% endif %}
+        </label>
+        <label>CTCSS TX, Гц
+          <input name="ctcss_tx_hz" value="{{ values.ctcss_tx_hz }}">
+          {% if errors.ctcss_tx_hz %}<span class="field-error">{{ errors.ctcss_tx_hz }}</span>{% endif %}
+        </label>
+        <label>ARM тон, Гц
+          <input name="arm_ctcss_hz" value="{{ values.arm_ctcss_hz }}">
+          {% if errors.arm_ctcss_hz %}<span class="field-error">{{ errors.arm_ctcss_hz }}</span>{% endif %}
+        </label>
+      </div>
+    </div>
+
+    <div class="pair" data-pair="2">
+      <div class="pair-title">Пара 2 (например APRS)</div>
+      <div class="form-grid">
+        <label>RX2, МГц
+          <input name="secondary_rx_freq_mhz" value="{{ values.secondary_rx_freq_mhz }}">
+          {% if errors.secondary_rx_freq_mhz %}<span class="field-error">{{ errors.secondary_rx_freq_mhz }}</span>{% endif %}
+        </label>
+        <label>TX2, МГц
+          <input name="secondary_tx_freq_mhz" value="{{ values.secondary_tx_freq_mhz }}">
+          {% if errors.secondary_tx_freq_mhz %}<span class="field-error">{{ errors.secondary_tx_freq_mhz }}</span>{% endif %}
+        </label>
+      </div>
+    </div>
+
+    <div class="pair" data-pair="3">
+      <div class="pair-title">Пара 3 (дополнительная)</div>
+      <div class="form-grid">
+        <label>RX3, МГц
+          <input name="tertiary_rx_freq_mhz" value="{{ values.tertiary_rx_freq_mhz }}">
+          {% if errors.tertiary_rx_freq_mhz %}<span class="field-error">{{ errors.tertiary_rx_freq_mhz }}</span>{% endif %}
+        </label>
+        <label>TX3, МГц
+          <input name="tertiary_tx_freq_mhz" value="{{ values.tertiary_tx_freq_mhz }}">
+          {% if errors.tertiary_tx_freq_mhz %}<span class="field-error">{{ errors.tertiary_tx_freq_mhz }}</span>{% endif %}
+        </label>
+      </div>
+    </div>
+
+    <div class="card tx-panel" id="tx-panel" hidden>
+      <div class="tx-head">
+        <b>Транспондеры <span id="tx-title"></span></b>
+        <span class="dim">перетащите строку в пару 1–3 · частоты можно и вписать вручную</span>
+      </div>
+      <div id="tx-list" class="tx-list"></div>
+    </div>
+
+    <div class="form-buttons">
+      <a href="/satellites/" class="btn">Отмена</a>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

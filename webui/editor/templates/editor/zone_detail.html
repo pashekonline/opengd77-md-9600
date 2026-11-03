@@ -1,0 +1,27 @@
+{% extends "editor/base.html" %}
+{% block title %}Зона {{ zid }}{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Зона {{ zid }}</h2>
+  <div class="table-wrap">
+  <table class="channels">
+    <thead><tr><th>Канал</th><th>Имя</th><th>RX, МГц</th><th>TX, МГц</th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="num">{{ r.num }}</td>
+        <td class="name"><a href="/channel/{{ r.num|add:-1 }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.rx }}</td>
+        <td>{{ r.tx }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="empty-row">Зона пуста</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <div class="form-buttons">
+    <a href="/zones/" class="btn">← К списку зон</a>
+  </div>
+</div>
+{% endblock %}

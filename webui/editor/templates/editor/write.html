@@ -1,0 +1,29 @@
+{% extends "editor/base.html" %}
+{% block title %}Запись в рацию{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2 class="danger-title">Запись в рацию</h2>
+  <p>Записать кодплаг в рацию?</p>
+  <ul class="stats">
+    <li>Каналов: <b>{{ stats.total }}</b></li>
+    <li>Зон: <b>{{ stats.zones }}</b></li>
+    <li>Изменено каналов: <b>{{ stats.changed }}</b></li>
+  </ul>
+  <p class="dim">Перед записью будет создан backup вида
+    <code>codeplug_before_write_*.g77</code>.<br>
+    Во время записи не отключайте рацию и кабель — прервать её нельзя.</p>
+
+  {% if error %}<div class="field-error global">{{ error }}</div>{% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <label>Для подтверждения введите <b>WRITE</b>:
+      <input name="confirm_text" placeholder="WRITE" autocomplete="off" autofocus>
+    </label>
+    <div class="form-buttons">
+      <a href="/" class="btn">Отмена</a>
+      <button type="submit" class="btn danger">Записать</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

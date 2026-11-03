@@ -1,0 +1,45 @@
+{% extends "editor/base.html" %}
+{% block title %}Предпросмотр импорта{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Предпросмотр импорта</h2>
+  <ul class="stats">
+    <li>Файл: <b>{{ pending.filename }}</b></li>
+    <li>Будет добавлено каналов: <b>{{ pending.rows|length }}</b></li>
+    <li>Строк с ошибками: <b>{{ pending.errors|length }}</b></li>
+    <li>Предупреждений по зонам: <b>{{ zone_warnings }}</b></li>
+  </ul>
+
+  <div class="table-wrap">
+  <table class="channels">
+    <thead><tr><th>Строка</th><th>Имя</th><th>RX</th><th>TX</th><th>Режим</th><th>Зоны</th></tr></thead>
+    <tbody>
+      {% for r in preview_rows %}
+      <tr>
+        <td class="num">{{ r.line }}</td>
+        <td>{{ r.name }}</td>
+        <td>{{ r.rx }}</td>
+        <td>{{ r.tx }}</td>
+        <td>{{ r.mode }}</td>
+        <td>{{ r.zones }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <div class="messages">
+    {% for m in messages %}<div class="msg">{{ m }}</div>{% endfor %}
+  </div>
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-buttons">
+      <button type="submit" name="action" value="cancel" class="btn">Отмена</button>
+      {% if pending.rows %}
+      <button type="submit" name="action" value="apply" class="btn primary">Импортировать</button>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

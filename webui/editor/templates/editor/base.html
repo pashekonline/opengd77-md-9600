@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="{{ csrf_token }}">
+<title>{% block title %}Каналы{% endblock %} · {{ app_title }}</title>
+<link rel="stylesheet" href="/static/editor/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-dot"></span>
+    MD-9600 <span class="brand-sub">Codeplug Editor</span>
+  </div>
+  <div class="statusbar">
+    <span class="chip">порт:
+      {% if status.port %}<b>{{ status.port }}</b>{% else %}<b class="warn">не найден</b>{% endif %}
+    </span>
+    <span class="chip">каналов: <b>{{ status.total_channels }}</b></span>
+    <span class="chip">зон: <b>{{ status.zones_count }}</b></span>
+    {% if status.radio_busy %}
+      <span class="chip busy">работа с рацией…</span>
+    {% elif status.loaded and status.dirty %}
+      <span class="chip dirty">● не сохранено</span>
+    {% elif status.loaded %}
+      <span class="chip saved">✓ сохранено</span>
+    {% endif %}
+  </div>
+</header>
+
+<nav class="toolbar">
+  <form method="post" action="/radio/read/" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="btn primary" {% if status.radio_busy %}disabled{% endif %}>Прочитать</button>
+  </form>
+  <a href="/radio/write/" class="btn {% if not status.loaded %}off{% endif %}">Записать</a>
+  <form method="post" action="/radio/verify/" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if not status.loaded %}off{% endif %}" {% if status.radio_busy %}disabled{% endif %}>Проверить</button>
+  </form>
+  <span class="sep"></span>
+  <a href="/channel/new/" class="btn {% if not status.loaded %}off{% endif %}">+ Канал</a>
+  <a href="/zones/" class="btn {% if not status.loaded %}off{% endif %}">Зоны</a>
+  <a href="/satellites/" class="btn">Спутники</a>
+  <span class="sep"></span>
+  <a href="/csv/export/" class="btn {% if not status.loaded %}off{% endif %}">CSV экспорт</a>
+  <a href="/csv/import/" class="btn {% if not status.loaded %}off{% endif %}">CSV импорт</a>
+  <form method="post" action="/backup/" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="btn {% if not status.loaded %}off{% endif %}">Backup</button>
+  </form>
+  <span class="spacer"></span>
+  <form method="post" action="/undo/" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="btn small" {% if not status.can_undo %}disabled{% endif %}>Отменить</button>
+  </form>
+  <form method="post" action="/redo/" class="inline">
+    {% csrf_token %}
+    <button type="submit" class="btn small" {% if not status.can_redo %}disabled{% endif %}>Вернуть</button>
+  </form>
+  <a href="/journal/" class="btn small">Журнал</a>
+  <a href="/help/" class="btn small">Справка</a>
+</nav>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+{% if message %}
+<div class="toast {% if message_error %}error{% else %}ok{% endif %}" id="toast">
+  <span>{{ message }}</span>
+  <button class="toast-close" onclick="document.getElementById('toast').remove()">×</button>
+</div>
+{% endif %}
+
+<div class="overlay hidden" id="job-overlay">
+  <div class="dialog">
+    <div class="dialog-title" id="job-message">Работа с рацией…</div>
+    <div class="progress-wrap" id="job-progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="job-fill"></div></div>
+      <div class="progress-text" id="job-text">0%</div>
+    </div>
+    <div class="dialog-hint" id="job-hint"></div>
+    <div class="dialog-hint dim" id="job-elapsed"></div>
+    <div class="dialog-buttons">
+      <button class="btn danger hidden" id="job-cancel">Отменить (Esc)</button>
+    </div>
+  </div>
+</div>
+
+<script src="/static/editor/app.js"></script>
+</body>
+</html>

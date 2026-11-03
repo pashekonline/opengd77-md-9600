@@ -1,0 +1,15 @@
+{% extends "editor/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2 class="{% if danger %}danger-title{% endif %}">{{ title }}</h2>
+  <p class="confirm-message">{{ message|linebreaksbr }}</p>
+  <form method="post" action="{{ action }}">
+    {% csrf_token %}
+    <div class="form-buttons">
+      <a href="/" class="btn">Отмена</a>
+      <button type="submit" class="btn {% if danger %}danger{% else %}primary{% endif %}">{{ confirm_label }}</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

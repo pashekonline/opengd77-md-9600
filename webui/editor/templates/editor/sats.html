@@ -1,0 +1,80 @@
+{% extends "editor/base.html" %}
+{% block title %}Спутники{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Спутники</h2>
+
+  {% if config_error %}
+    <div class="field-error global">Не удалось прочитать конфиг: {{ config_error }}</div>
+  {% endif %}
+
+  <div class="table-wrap">
+  <table class="channels">
+    <thead>
+      <tr>
+        <th>#</th><th>Имя</th><th>NORAD</th>
+        <th>RX1, МГц</th><th>TX1, МГц</th><th>CTCSS/ARM</th>
+        <th>RX2</th><th>TX2</th><th>RX3</th><th>TX3</th>
+        <th>TLE (эпоха)</th><th class="actions-col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td class="num">{{ r.slot }}</td>
+        <td class="name"><a href="/satellites/{{ r.slot }}/edit/">{{ r.name }}</a></td>
+        <td>{{ r.norad }}</td>
+        <td>{{ r.rx1 }}</td>
+        <td>{{ r.tx1 }}</td>
+        <td>{{ r.ctcss }} / {{ r.arm }}</td>
+        <td>{{ r.rx2 }}</td>
+        <td>{{ r.tx2 }}</td>
+        <td>{{ r.rx3 }}</td>
+        <td>{{ r.tx3 }}</td>
+        <td>
+          {% if r.tle1 %}
+          <details>
+            <summary>{{ r.epoch }}</summary>
+            <pre class="tle">{{ r.tle1 }}
+{{ r.tle2 }}</pre>
+          </details>
+          {% else %}—{% endif %}
+        </td>
+        <td class="actions">
+          <a href="/satellites/{{ r.slot }}/edit/" class="btn tiny icon" title="Редактировать">
+            <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12v2.5h2.5L12.5 6.5 10 4 2 12z"/><path d="M8.5 5.5 10 4l2 2-1.5 1.5"/></svg>
+          </a>
+          <form method="post" class="inline"
+                data-confirm="Удалить спутник «{{ r.name }}» из списка?">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="slot" value="{{ r.slot }}">
+            <button type="submit" class="btn tiny danger icon" title="Удалить">
+              <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="12" class="empty-row">Список пуст — добавьте спутник</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <div class="form-buttons" style="justify-content: flex-start">
+    <a href="/satellites/new/" class="btn primary">+ Спутник</a>
+    <form method="post" class="inline">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="fetch_tle">
+      <button type="submit" class="btn" {% if busy %}disabled{% endif %}>Найти TLE</button>
+    </form>
+    <form method="post" class="inline"
+          data-confirm="Записать блок спутников в рацию? Прервать запись нельзя.">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="write">
+      <button type="submit" class="btn" {% if busy or not rows %}disabled{% endif %}>Записать в рацию</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends "editor/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>{{ title }}</h2>
+
+  {% if errors.form %}<div class="field-error global">{{ errors.form }}</div>{% endif %}
+
+  <form method="post" id="channel-form">
+    {% csrf_token %}
+    <div class="form-grid">
+      <label class="span2">Имя
+        <input name="name" maxlength="{{ name_max }}" value="{{ values.name }}"
+               placeholder="до 16 ASCII-символов" autofocus>
+        {% if errors.name %}<span class="field-error">{{ errors.name }}</span>{% endif %}
+      </label>
+      <label>RX, МГц
+        <input name="rx" value="{{ values.rx }}" placeholder="145.500">
+        {% if errors.rx %}<span class="field-error">{{ errors.rx }}</span>{% endif %}
+      </label>
+      <label>TX, МГц
+        <input name="tx" value="{{ values.tx }}" placeholder="145.500">
+        {% if errors.tx %}<span class="field-error">{{ errors.tx }}</span>{% endif %}
+      </label>
+      <label>RX тон
+        <input name="rx_tone" value="{{ values.rx_tone }}" placeholder="нет, например 88.5">
+        {% if errors.rx_tone %}<span class="field-error">{{ errors.rx_tone }}</span>{% endif %}
+      </label>
+      <label>TX тон
+        <input name="tx_tone" value="{{ values.tx_tone }}" placeholder="нет, например 88.5">
+        {% if errors.tx_tone %}<span class="field-error">{{ errors.tx_tone }}</span>{% endif %}
+      </label>
+      <label>Режим
+        <select name="mode" id="mode-select">
+          <option value="FM" {% if values.mode == "DMR" %}{% else %}selected{% endif %}>FM</option>
+          <option value="DMR" {% if values.mode == "DMR" %}selected{% endif %}>DMR</option>
+        </select>
+        {% if errors.mode %}<span class="field-error">{{ errors.mode }}</span>{% endif %}
+      </label>
+      <label>Color code
+        <select name="cc" id="cc-select">
+          {% for i in color_codes %}
+            <option value="{{ i }}" {% if values.cc == i|stringformat:"s" %}selected{% endif %}>{{ i }}</option>
+          {% endfor %}
+        </select>
+        {% if errors.cc %}<span class="field-error">{{ errors.cc }}</span>{% endif %}
+      </label>
+      <label>Контакт DMR
+        <input name="contact" value="{{ values.contact }}" placeholder="0" id="contact-input">
+        {% if errors.contact %}<span class="field-error">{{ errors.contact }}</span>{% endif %}
+      </label>
+    </div>
+
+    <h3>Зоны</h3>
+    {% if zone_labels %}
+    <div class="zone-chips">
+      {% for zid, name in zone_labels %}
+      <label class="chip-toggle">
+        <input type="checkbox" name="zones" value="{{ zid }}"
+               {% if zid in checked_zones %}checked{% endif %}>
+        <span>{{ zid }}: {{ name }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="dim">Зоны не найдены</p>
+    {% endif %}
+
+    <div class="form-buttons">
+      <a href="/" class="btn">Отмена</a>
+      <button type="submit" class="btn primary">Сохранить</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

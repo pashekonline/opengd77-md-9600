@@ -1,0 +1,19 @@
+{% extends "editor/base.html" %}
+{% block title %}Импорт CSV{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>Импорт CSV</h2>
+  <p class="dim">Файл с разделителем «»; колонки как при экспорте.
+    Колонка <code>index</code> не используется — каналы добавляются
+    в первые свободные слоты. Файл будет показан в предпросмотре
+    до применения.</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="file" accept=".csv,text/csv" required>
+    <div class="form-buttons">
+      <a href="/" class="btn">Отмена</a>
+      <button type="submit" class="btn primary">Далее — предпросмотр</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

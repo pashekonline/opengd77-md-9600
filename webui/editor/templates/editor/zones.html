@@ -1,0 +1,55 @@
+{% extends "editor/base.html" %}
+{% block title %}Зоны{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Зоны</h2>
+
+  {% if not status.loaded %}
+    <p class="dim">Кодплаг не загружен.</p>
+  {% else %}
+  <div class="table-wrap">
+  <table class="channels">
+    <thead>
+      <tr><th>ID</th><th>Имя</th><th>Каналов</th><th>Ёмкость</th><th class="actions-col"></th></tr>
+    </thead>
+    <tbody>
+      {% for z in zones %}
+      <tr>
+        <td class="num">{{ z.zid }}</td>
+        <td>
+          <form method="post" class="inline rename-form">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="rename">
+            <input type="hidden" name="zid" value="{{ z.zid }}">
+            <input name="name_{{ z.zid }}" value="{{ z.name }}" maxlength="16">
+            <button type="submit" class="btn tiny">Сохранить</button>
+          </form>
+        </td>
+        <td><a href="/zones/{{ z.zid }}/">{{ z.members }}</a></td>
+        <td>{{ z.capacity }}</td>
+        <td class="actions">
+          <form method="post" class="inline" data-confirm="Удалить зону {{ z.zid }}? ID последующих зон сдвинутся. Каналы останутся в кодплаге.">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="zid" value="{{ z.zid }}">
+            <button type="submit" class="btn tiny danger">Удалить</button>
+          </form>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="empty-row">Зон нет</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Новая зона</h3>
+  <form method="post" class="inline create-form">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="create">
+    <input name="name" placeholder="Имя зоны (до 16 ASCII)" maxlength="16" required>
+    <button type="submit" class="btn primary">Создать</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}
